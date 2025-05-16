@@ -27,19 +27,25 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
+  cors({
+    origin: "https://teamsyncc.vercel.app", // NO trailing slash
+    credentials: true,
+  })
+);
+
+app.use(
   session({
     secret: config.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-  maxAge: 24 * 60 * 60 * 1000,
-  secure: config.NODE_ENV === "production",
-  httpOnly: true,
-  sameSite: config.NODE_ENV === "production" ? "none" : "lax",
-},
+      maxAge: 24 * 60 * 60 * 1000,
+      secure: true,           // Always true for cross-origin HTTPS
+      httpOnly: true,
+      sameSite: "none",       // Must be "none" for cross-site cookies
+    },
   })
 );
-
 app.use(passport.initialize());
 app.use(passport.session());
 
