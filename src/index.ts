@@ -32,7 +32,7 @@ app.use(
     credentials: true,
   })
 );
-
+ 
 app.use(
   session({
     secret: config.SESSION_SECRET,
@@ -49,12 +49,12 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(
-  cors({
-    origin: config.FRONTEND_ORIGIN,
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: config.FRONTEND_ORIGIN,
+//     credentials: true,
+//   })
+// );
 
 app.get(
   `/`,
