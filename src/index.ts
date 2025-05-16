@@ -12,7 +12,7 @@ import { ErrorCodeEnum } from "./enums/error-code.enum";
 
 import "./config/passport.config";
 import passport from "passport";
-import authRoutes from "./routes/auth.route";
+import authRoutes from "./routes/auth.route";   
 import userRoutes from "./routes/user.route";
 import isAuthenticated from "./middlewares/isAuthenticated.middleware";
 import workspaceRoutes from "./routes/workspace.route";
