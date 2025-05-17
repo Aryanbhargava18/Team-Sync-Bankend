@@ -42,12 +42,13 @@ app.use(
     saveUninitialized: false,
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
-      secure: true, // Make sure your site is HTTPS
+      secure: process.env.NODE_ENV === "production",  // true only in production
       httpOnly: true,
-      sameSite: "none",
+      sameSite: "none",  // keep if using cross-site cookies, else "lax"
     },
   })
 );
+
 
 app.use(passport.initialize());
 app.use(passport.session());
