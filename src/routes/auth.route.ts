@@ -15,12 +15,13 @@ authRoutes.get(
 );
 
 authRoutes.get(
-  "/google/callback",
+  "/google/oauth/callback",
   passport.authenticate("google", {
-    failureRedirect: failedUrl,
+    failureRedirect: `${config.FRONTEND_GOOGLE_CALLBACK_URL}?status=failure`,
   }),
   googleLoginCallback
 );
+
 
 // 🚨 Add this line for email/password login:
 authRoutes.post("/login", loginController);
