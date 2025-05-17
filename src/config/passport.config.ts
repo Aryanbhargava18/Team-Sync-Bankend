@@ -2,7 +2,7 @@ import passport from "passport";
 import { Request } from "express";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as LocalStrategy } from "passport-local";
-
+import { findUserById } from "../services/user.service"; // adjust path as needed
 import { config } from "./app.config";
 import { NotFoundException } from "../utils/appError";
 import { ProviderEnum } from "../enums/account-provider.enum";
@@ -62,5 +62,16 @@ passport.use(
   )
 );
 
-passport.serializeUser((user: any, done) => done(null, user));
-passport.deserializeUser((user: any, done) => done(null, user));
+passport.serializeUser((user: any, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id: string, done) => {
+  try {
+    const user = await findUserById(id); // Implement this function to fetch user by ID from DB
+    done(null, user);
+  } catch (error) {
+    done(error, null);
+  }
+});
+ 
