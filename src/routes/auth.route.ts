@@ -6,6 +6,9 @@ import { googleLoginCallback, logOutController, loginController } from "../contr
 const failedUrl = `${config.FRONTEND_GOOGLE_CALLBACK_URL}?status=failure`;
 
 const authRoutes = Router();
+import { registerUserController } from "../controllers/auth.controller";
+
+authRoutes.post("/register", registerUserController);
 
 authRoutes.get(
   "/google",
