@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
-import session from "express-session"; // <-- FIXED HERE
+import session from "express-session";
 import { config } from "./config/app.config";
 import connectDatabase from "./config/database.config";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
@@ -12,49 +12,47 @@ import { ErrorCodeEnum } from "./enums/error-code.enum";
 
 import "./config/passport.config";
 import passport from "passport";
-import authRoutes from "./routes/auth.route";   
+import authRoutes from "./routes/auth.route";
 import userRoutes from "./routes/user.route";
 import isAuthenticated from "./middlewares/isAuthenticated.middleware";
 import workspaceRoutes from "./routes/workspace.route";
 import memberRoutes from "./routes/member.route";
 import projectRoutes from "./routes/project.route";
 import taskRoutes from "./routes/task.route";
+import cookieParser from "cookie-parser";
 
-const app = express();
-const BASE_PATH = config.BASE_PATH;
+const app = express(); // <-- Declare app FIRST!
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: "https://teamsyncc.vercel.app", // NO trailing slash
+    origin: "https://teamsyncc.vercel.app", // Your frontend URL
     credentials: true,
   })
 );
- 
+
 app.use(
   session({
     secret: config.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000,
-      secure: true,           // Always true for cross-origin HTTPS
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      secure: true,                // true if HTTPS
       httpOnly: true,
-      sameSite: "none",       // Must be "none" for cross-site cookies
+      sameSite: "none",            // for cross-site cookies
     },
+    // Optionally add a session store here for production
   })
 );
+
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.use(
-//   cors({
-//     origin: config.FRONTEND_ORIGIN,
-//     credentials: true,
-//   })
-// );
+const BASE_PATH = config.BASE_PATH;
 
 app.get(
   `/`,
@@ -63,9 +61,8 @@ app.get(
       "This is a bad request",
       ErrorCodeEnum.AUTH_INVALID_TOKEN
     );
-    return res.status(HTTPSTATUS.OK).json({
-      message: "hmm",
-    });
+    // The next line is unreachable but kept for clarity
+    // return res.status(HTTPSTATUS.OK).json({ message: "hmm" });
   })
 );
 
