@@ -43,24 +43,38 @@ export const registerUserController = asyncHandler(
 
 export const loginController = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    passport.authenticate("local", (err, user, info) => {
-      if (err) {
-        console.error("Authentication error:", err);
-        return next(err);
-      }
-      if (!user) {
-        return res.status(401).json({ message: info?.message || "Invalid email or password" });
-      }
-      req.logIn(user, (err) => {
+    passport.authenticate(
+      "local",
+      (
+        err: Error | null,
+        user: Express.User | false,
+        info: { message?: string } | undefined
+      ) => {
         if (err) {
-          console.error("Login error:", err);
           return next(err);
         }
-        return res.status(200).json({ message: "Logged in successfully", user });
-      });
-    })(req, res, next);
+
+        if (!user) {
+          return res.status(401).json({
+            message: info?.message || "Invalid email or password",
+          });
+        }
+
+        req.logIn(user, (err: Error | null) => {
+          if (err) {
+            return next(err);
+          }
+
+          return res.status(200).json({
+            message: "Logged in successfully",
+            user,
+          });
+        });
+      }
+    )(req, res, next);
   }
 );
+
 
 export const logOutController = asyncHandler(
   async (req: Request, res: Response) => {
