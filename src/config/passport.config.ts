@@ -29,7 +29,7 @@ passport.use(
           throw new NotFoundException("Google ID (sub) is missing");
         }
 
-        const { user } = await loginOrCreateAccountService({
+        const { user } = await loginOrCreateAccountService({ 
           provider: ProviderEnum.GOOGLE,
           displayName: profile.displayName,
           providerId: googleId,
@@ -73,5 +73,5 @@ passport.deserializeUser(async (id: string, done) => {
   } catch (error) {
     done(error, null);
   }
-});
+}); 
  
