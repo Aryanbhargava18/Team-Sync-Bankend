@@ -32,7 +32,11 @@ authRoutes.get(
     res.redirect(`${config.FRONTEND_ORIGIN}/workspace/${workspaceId}`);
   }
 );
+import { Request, Response } from "express";
 
+authRoutes.get("/test", (req: Request, res: Response) => {
+  res.json({ ok: true });
+});
 
 // 🚨 Add this line for email/password login:
 authRoutes.post("/login", loginController);
