@@ -62,8 +62,12 @@ passport.use(
   )
 );
 
+
 passport.serializeUser((user: any, done) => {
-  done(null, user.id);
+  if (!user._id && !user.id) {
+    return done(new Error("User object missing id"), null);
+  }
+  done(null, user._id ? user._id.toString() : user.id);
 });
 
 passport.deserializeUser(async (id: string, done) => {
