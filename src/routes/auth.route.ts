@@ -19,7 +19,18 @@ authRoutes.get(
   passport.authenticate("google", {
     failureRedirect: `${config.FRONTEND_GOOGLE_CALLBACK_URL}?status=failure`,
   }),
-  googleLoginCallback
+  (req, res) => {
+    if (!req.user || !req.user.currentWorkspace) {
+      return res.redirect(`${config.FRONTEND_GOOGLE_CALLBACK_URL}?status=failure`);
+    }
+
+    const workspaceId =
+      typeof req.user.currentWorkspace === "string"
+        ? req.user.currentWorkspace
+        : req.user.currentWorkspace._id;
+
+    res.redirect(`${config.FRONTEND_ORIGIN}/workspace/${workspaceId}`);
+  }
 );
 
 

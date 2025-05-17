@@ -8,7 +8,9 @@ import passport from "passport";
 
 export const googleLoginCallback = asyncHandler(
   async (req: Request, res: Response) => {
+    console.log("User after Google login:", req.user);
     const currentWorkspace = req.user?.currentWorkspace;
+    console.log("Current Workspace:", currentWorkspace);
 
     if (!currentWorkspace) {
       return res.redirect(
@@ -16,11 +18,14 @@ export const googleLoginCallback = asyncHandler(
       );
     };
 
+    const currentWorkspaceId = typeof currentWorkspace === 'string' ? currentWorkspace : currentWorkspace?._id;
+
     return res.redirect(
-      `${config.FRONTEND_ORIGIN}/workspace/${currentWorkspace}`
+      `${config.FRONTEND_ORIGIN}/workspace/${currentWorkspaceId}`
     );
   }
 );
+
 
 export const registerUserController = asyncHandler(
   async (req: Request, res: Response) => {
