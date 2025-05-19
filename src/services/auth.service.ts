@@ -98,26 +98,31 @@ export const registerUserService = async (body: {
   try {
     session.startTransaction();
 
-    const existingUser = await UserModel.findOne({ email }).session(session);
+    const emailLower = email.toLowerCase();
+
+    const existingUser = await UserModel.findOne({ email: emailLower }).session(session);
     if (existingUser) {
       throw new BadRequestException("Email already exists");
     }
+
+    // Hash the password here
     const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = new UserModel({
-      email,
+      email: emailLower,
       name,
-      password: hashedPassword,
+      password: hashedPassword,  // Use hashed password here
     });
     await user.save({ session });
 
     const account = new AccountModel({
       userId: user._id,
       provider: ProviderEnum.EMAIL,
-      providerId: email,
+      providerId: emailLower,
     });
     await account.save({ session });
 
-    // 3. Create a new workspace for the new user
+    // Create workspace and member as before
     const workspace = new WorkspaceModel({
       name: `My Workspace`,
       description: `Workspace created for ${user.name}`,
@@ -169,7 +174,11 @@ export const verifyUserService = async ({
   password: string;
   provider?: string;
 }) => {
-  const account = await AccountModel.findOne({ provider, providerId: email });
+  // Normalize email to lowercase to avoid case mismatch
+  const emailLower = email.toLowerCase();
+
+  // Find account using normalized email
+  const account = await AccountModel.findOne({ provider, providerId: emailLower });
   if (!account) {
     throw new NotFoundException("Invalid email or password");
   }
@@ -188,3 +197,5 @@ export const verifyUserService = async ({
 
   return user.omitPassword();
 };
+
+ 
