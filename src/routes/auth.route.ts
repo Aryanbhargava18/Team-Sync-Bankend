@@ -8,8 +8,14 @@ const failedUrl = `${config.FRONTEND_GOOGLE_CALLBACK_URL}?status=failure`;
 const authRoutes = Router();
 import { registerUserController } from "../controllers/auth.controller";
 
-authRoutes.post("/register", registerUserController);
+// Temporarily disabled email/password registration route
+// Uncomment this line to enable email/password registration again
+// authRoutes.post("/register", registerUserController);
+authRoutes.post("/register", (req, res) => {
+  res.status(403).json({ message: "Email/password registration is temporarily disabled. Please use Google signup." });
+});
 
+// Google OAuth login route
 authRoutes.get(
   "/google",
   passport.authenticate("google", {
@@ -17,14 +23,15 @@ authRoutes.get(
   })
 );
 
+// Google OAuth callback route
 authRoutes.get(
   "/google/oauth/callback",
   passport.authenticate("google", {
-    failureRedirect: `${config.FRONTEND_GOOGLE_CALLBACK_URL}?status=failure`,
+    failureRedirect: failedUrl,
   }),
   (req, res) => {
     if (!req.user || !req.user.currentWorkspace) {
-      return res.redirect(`${config.FRONTEND_GOOGLE_CALLBACK_URL}?status=failure`);
+      return res.redirect(failedUrl);
     }
 
     const workspaceId =
@@ -35,14 +42,19 @@ authRoutes.get(
     res.redirect(`${config.FRONTEND_ORIGIN}/workspace/${workspaceId}`);
   }
 );
+
 import { Request, Response } from "express";
 
 authRoutes.get("/test", (req: Request, res: Response) => {
   res.json({ ok: true });
 });
 
-// 🚨 Add this line for email/password login:
-authRoutes.post("/login", loginController);
+// Temporarily disabled email/password login route
+// Uncomment this line to enable email/password login again
+// authRoutes.post("/login", loginController);
+authRoutes.post("/login", (req, res) => {
+  res.status(403).json({ message: "Email/password login is temporarily disabled. Please use Google login." });
+});
 
 authRoutes.post("/logout", logOutController);
 

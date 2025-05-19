@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Request } from "express";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { Strategy as LocalStrategy } from "passport-local";
+// import { Strategy as LocalStrategy } from "passport-local"; // Disabled LocalStrategy
 import { findUserById } from "../services/user.service"; // adjust path as needed
 import { config } from "./app.config";
 import { NotFoundException } from "../utils/appError";
@@ -44,6 +44,10 @@ passport.use(
   )
 );
 
+/*
+// LocalStrategy is temporarily disabled to only allow Google login/signup.
+// Uncomment this block to enable email/password login again.
+
 passport.use(
   new LocalStrategy(
     {
@@ -61,7 +65,7 @@ passport.use(
     }
   )
 );
-
+*/
 
 passport.serializeUser((user: any, done) => {
   if (!user._id && !user.id) {
@@ -77,5 +81,4 @@ passport.deserializeUser(async (id: string, done) => {
   } catch (error) {
     done(error, null);
   }
-}); 
- 
+});
