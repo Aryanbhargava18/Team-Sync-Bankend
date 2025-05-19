@@ -11,6 +11,7 @@ import {
 } from "../utils/appError";
 import MemberModel from "../models/member.model";
 import { ProviderEnum } from "../enums/account-provider.enum";
+import bcrypt from "bcrypt";
 
 export const loginOrCreateAccountService = async (data: {
   provider: string;
@@ -101,11 +102,11 @@ export const registerUserService = async (body: {
     if (existingUser) {
       throw new BadRequestException("Email already exists");
     }
-
+    const hashedPassword = await bcrypt.hash(password, 10);
     const user = new UserModel({
       email,
       name,
-      password,
+      password: hashedPassword,
     });
     await user.save({ session });
 

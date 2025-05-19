@@ -70,7 +70,7 @@ export const loginController = asyncHandler(
             user,
           });
         });
-      }
+      }  
     )(req, res, next);
   }
 );
