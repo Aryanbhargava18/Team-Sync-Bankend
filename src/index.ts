@@ -24,7 +24,7 @@ import taskRoutes from "./routes/task.route";
 const app = express();
 
 app.use(cookieParser());
-
+app.set('trust proxy', 1);
 app.use(
   cors({
     origin: "https://teamsyncc.vercel.app",
@@ -48,7 +48,7 @@ app.use(
     },
   })
 );
-app.set('trust proxy', 1);
+
 
 
 app.use(passport.initialize());
